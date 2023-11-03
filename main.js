@@ -3,7 +3,13 @@ javascript:(function() {
     var c = Array.from(document.querySelectorAll("tbody > tr")) ,
         e = 0 ,
         b = 0
-        c = Array.from(document.querySelectorAll("tbody > tr")).filter( tr => !tr.textContent.includes('Shipping Protection'))
+        //remove non line item
+        c = c.filter( tr => tr.textContent.includes('quantity'))
+        //remove free gift
+        c = c.filter( tr => !tr.textContent.includes('$0.00'))
+        //remove shipping protection app
+        c = c.filter( tr => !tr.textContent.includes('Shipping Protection'))
+        c = c.filter(tr => tr.querySelector('td:nth-child(1) > div > div:nth-child(2) > span > span:nth-child(2)').textContent == '' )
     async function performAsyncOperation(item){
         console.log('c item', item);
         return new Promise( (resolve , reject) => {
@@ -55,17 +61,18 @@ javascript:(function() {
             console.log(error)
         }
     }
+    if(c.length < 1 ){
+        alert('No product selected')
+        return
+    }
     processArrayWithAsyncOperation(c).then( () => {
         console.log('All async operation completed')
         let dialogs = document.querySelectorAll('div[role="dialog"]')
         dialogs.forEach( dialog => {
-            // setTimeout(() => {
                 let applyBtn = dialog.querySelector('div > div:nth-child(3) > div > div > div:nth-child(2) > button:nth-child(2)')
                 if(applyBtn){
-                    // applyBtn.click()
+                    applyBtn.click()
                 }                
-            // }, 4000);
-            // console.log('sdsfa',d)
         })
     }).catch( error => {
         console.log(error)
